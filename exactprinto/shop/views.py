@@ -33,22 +33,22 @@ def index(request):
 
 
 def about(request):
-    return HttpResponse("we are at about")
+        return render(request, 'shop/about.html')
 
 
 
 def contact(request):
-    return HttpResponse("we are at contact")
+    return render(request, 'shop/contact.html')
 
 
 
 def tracker(request):
-    return HttpResponse("we are at tracker")
+     return render(request, 'shop/tracker.html')
 
 
 
 def search(request):
-    return HttpResponse("we are at search")
+    return render(request, 'shop/search.html')
 
 
 
