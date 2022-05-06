@@ -1,0 +1,112 @@
+{% extends 'shop/basic.html' %}
+
+{% block title%} {{product.product_name}} - My Awesome Cart{% endblock %}
+{% block body %}
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="row">
+                <img src="/media/{{product.image}}" width="233px" height="385px">
+            </div>
+            <div class="row">
+                <button class="btn btn-primary mx-3">Buy Now</button>
+               
+                <span id="divpr{{product.product_id}}" class="divpr">
+                    <button id="pr{{product.product_id}}" class="btn btn-primary cart">Add To Cart</button>
+                  </span>
+            </div>
+
+        </div>
+
+        <div class="col-md-8">
+            <h5>{{product.product_name}}</h5>
+            <p><b>Rs.{{product.price}} </b></p>
+            <p>{{product.desc}}</p>
+
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+{% endblock %}
+
+
+
+
+{% block js %}
+<script>
+    // console.log('Working');
+    // find cart from locak storage
+    if (localStorage.getItem('cart') == null) {
+        var cart = {};
+    }
+    else {
+        cart = JSON.parse(localStorage.getItem('cart'))
+        // document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        document.getElementById('cart').innerHTML = Object.keys(cart).reduce((sum, key) => sum + parseFloat(cart[key] || 0), 0);
+        updatecart(cart);
+    }
+
+    // operation of click
+
+    $(".cart").click(function () {
+         console.log("clicked");
+        var idstr = this.id.toString();
+        // console.log(idstr);
+
+        if (cart[idstr] != undefined) {
+            cart[idstr] = cart[idstr] + 1;
+        }
+        else {
+            cart[idstr] = 1;
+        }
+        console.log(cart);
+        updatecart(cart);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        // document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        document.getElementById('cart').innerHTML = Object.keys(cart).reduce((sum, key) => sum + parseFloat(cart[key] || 0), 0);
+    });
+
+    // cart Popover
+    $('#popcart').popover();
+    document.getElementById("popcart").setAttribute('data-content', '<h5>cart</h5>')
+
+
+    // update card
+    function updatecart(cart) {
+        for (item in cart) {
+            document.getElementById('div' + item).innerHTML = "<button id = 'minus" +
+                item + "' class  = 'btn btn-primary minus'>-</button>  <span id = 'val" +
+                item + "''>" + cart[item] + "</span> <button id = 'plus" + item +
+                "' class='btn btn-primary plus'> + </button>";
+            console.log('cart update');
+        }
+    }
+
+    $(".divpr").on("click", "button.minus", function () {
+        console.log("minus clicked");
+        a = this.id.slice(7);
+        cart['pr' + a] = cart['pr' + a] - 1;
+        cart['pr' + a] = Math.max(0, cart['pr' + a]);
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+        updatecart(cart);
+        document.getElementById('cart').innerHTML = Object.keys(cart).reduce((sum, key) => sum + parseFloat(cart[key] || 0), 0);
+
+    });
+    $(".divpr").on("click", "button.plus", function () {
+        console.log("plus clicked");
+        a = this.id.slice(6);
+        cart['pr' + a] = cart['pr' + a] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+        updatecart(cart);
+        document.getElementById('cart').innerHTML = Object.keys(cart).reduce((sum, key) => sum + parseFloat(cart[key] || 0), 0);
+
+
+    });
+</script>
+{% endblock %}
