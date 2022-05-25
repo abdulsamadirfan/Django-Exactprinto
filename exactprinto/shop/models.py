@@ -26,3 +26,32 @@ class Contact(models.Model):
     
     def __str__(self):
         return self.name
+
+
+
+class Order(models.Model):
+    Order_id = models.BigAutoField(primary_key = True)
+    items_json  = models.CharField(max_length=5000)
+    name  = models.CharField(max_length=90)
+    email  = models.CharField(max_length=100)
+    address  = models.CharField(max_length=100)
+    city  = models.CharField(max_length=100)
+    state  = models.CharField(max_length=100)
+    zip_code  = models.CharField(max_length=100)
+    phone  = models.CharField(max_length=100, default = "")
+
+
+
+
+
+class OrderUpdate(models.Model):
+    update_id = models.BigAutoField(primary_key=True)
+    order_id = models.IntegerField(default="")
+    update_dec = models.CharField(max_length=50000)
+    timestamp = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.update_dec[0:7] + "..."
+
+        
+

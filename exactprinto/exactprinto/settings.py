@@ -56,7 +56,7 @@ ROOT_URLCONF = 'exactprinto.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['exactprinto/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
