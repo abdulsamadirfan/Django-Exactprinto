@@ -12,8 +12,8 @@
   </head>
   <body>
     <h1>Hello, world!</h1>
-    {% load static % }
-    <a href="{%static 'blog/staticblog.txt' %}"> Click me </a>
+    {% load staticfiles % }
+    <a href="{% static 'blog/staticblog.txt' %}"> Click me </a>
 
     <!-- Optional JavaScript; choose one of the two! -->
 

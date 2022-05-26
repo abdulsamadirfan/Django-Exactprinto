@@ -2,8 +2,12 @@ from django.shortcuts import render
 
 from .models import Product, Contact, Order, OrderUpdate
 from math import ceil
+import json
+
 
 from django.http import HttpResponse
+
+
 def index(request):
     allprod = []
     catprod = Product.objects.values('category')
@@ -18,7 +22,7 @@ def index(request):
 
 
 def about(request):
-        return render(request, 'shop/about.html')
+    return render(request, 'shop/about.html')
 
 
 def contact(request):
@@ -33,7 +37,24 @@ def contact(request):
 
 
 def tracker(request):
-     return render(request, 'shop/tracker.html')
+    if request.method == "POST":
+        orderID = request.POST.get('OrderID', "")
+        email = request.POST.get('email', '')
+        try:
+            order = Order.objects.filter(Order_id=orderID, email=email)
+            if len(order) > 0:
+                update = OrderUpdate.objects.filter(order_id=orderID)
+                updates = []
+                for item in update:
+                    updates.append(
+                        {'text': item.update_dec, 'time': item.timestamp})
+                    response = json.dump(updates)
+                    return HttpResponse(response)
+            else:
+                pass
+        except Exception as e:
+            pass
+    return render(request, 'shop/tracker.html')
 
 
 def search(request):
@@ -49,25 +70,23 @@ def products(request, p_id):
 
 def checkout(request):
     if request.method == 'POST':
-        items_json = request.POST.get('itemsJson',"")
+        items_json = request.POST.get('itemsJson', "")
         name = request.POST.get('name', "")
         email = request.POST.get('email', "")
-        address = request.POST.get('address1', "") + " " + request.POST.get('address2', "")
+        address = request.POST.get('address1', "") + \
+            " " + request.POST.get('address2', "")
         city = request.POST.get('city', "")
         state = request.POST.get('state', "")
         zip_code = request.POST.get('zip_code', "")
         phone = request.POST.get('phone', "")
         order = Order(name=name, email=email, address=address,
-        city=city, state=state, zip_code=zip_code, phone=phone)
+                      city=city, state=state, zip_code=zip_code, phone=phone)
         order.save()
         id = order.Order_id
-        update = OrderUpdate(order_id = id, update_dec = "The order has been placed")
+        update = OrderUpdate(
+            order_id=id, update_dec="The order has been placed")
         update.save()
-        
+
         thank = True
         return render(request, 'shop/checkout.html', {'thank': thank, 'id': id})
     return render(request, 'shop/checkout.html')
-
-
-
-
